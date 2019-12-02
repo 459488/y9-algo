@@ -3,6 +3,46 @@ from tkinter import filedialog
 from PIL import ImageTk,Image
 from random import randint
 
+def saveas():
+    global text
+    t = text.get("1.0", "end-1c")
+    savelocation=tkFileDialog.asksaveasfilename()
+    file1=open(savelocation, "w+")
+    file1.write(t)
+    file1.close()
+    
+def deletework():
+    typesomething.delete(0, END)
+
+def saved():
+    global save
+    save = False
+    if save==True:
+        checksaved = Label(something,text="Saved!").grid(row=0,column=0)
+    else:
+        checksaved = Label(something,text="Not Saved... :(").grid(row=0,column=0)
+
+def editopen():
+    something = Tk()
+    something.title("filecreator")
+    something.geometry("800x500")
+
+    bad = Button(something,text="Discard",command=deletework).grid(row=0,column=1)
+    good = Button(something,text="Save",command=createfile).grid(row=0,column=2)
+    ready = Button(something,text="Publish").grid(row=0,column=3)
+
+    instructions1 = Label(text="feel free to write")
+    instructions1.grid(row=1,column=0)
+    typesomething = Entry(something)
+    typesomething.grid(row=1,column=1)
+
+    instructions2 = Label(text="copy a link here")
+    instructions2.grid(row=2,column=0)
+    linkhere = Entry(something)
+    linkhere.grid(row=2,column=1)
+
+    something.mainloop()
+
 def viewopen():
     gallery = Tk()
     filei = open("newfile.txt","r")
