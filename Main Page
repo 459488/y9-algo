@@ -51,8 +51,6 @@ def createopen():
     typesomething = Entry(something)
     typesomething.grid(row=1,column=1)
 
-    something.mainloop()
-
 def viewopen():
     gallery = Tk()
     gallery.title("Text From Chosen File")
@@ -63,48 +61,53 @@ def viewopen():
     filei.close()
     l1 = Label(gallery,text=remember).pack()
 
-def change():
-    global rng
-    global words
+def landingpage():
+
+    def change():
+        global rng
+        global words
+        rng = randint(1,10)
+        print(rng)
+        if rng == 1:
+            words = "big and lazy" + " (click again to change)"
+        else:
+            words = "quote" + str(rng) + " (click again to change)"
+        quote.config(text=words)
+
+    landing = Tk()
+    landing.title("Home")
+    landing.geometry("850x330")
+
+    words = "click to see quote of the day"
     rng = randint(1,10)
-    print(rng)
-    if rng == 1:
-        words = "big and lazy" + " (click again to change)"
-    else:
-        words = "quote" + str(rng) + " (click again to change)"
-    quote.config(text=words)
 
-landing = Tk()
-landing.title("Home")
-landing.geometry("850x330")
+    leftframe = Frame(landing,width=300,height=300)
+    leftframe.grid(row=0,column=0)
+    createbutton = Button(leftframe,text="CREATE",width="45",height="4",font=("Calibri", 13),command=createopen)
+    createbutton.pack()
+    editbutton = Button(leftframe,text="EDIT",width="45",height="4",font=("Calibri", 13))
+    editbutton.pack()
+    viewbutton = Button(leftframe,text="VIEW",width="45",height="4",font=("Calibri", 13),command=viewopen)
+    viewbutton.pack()
+    otherbutton = Button(leftframe,text="OTHER",width="45",height="4",font=("Calibri", 13))
+    otherbutton.pack()
+    quitbutton = Button(leftframe,text="QUIT",width="45", height="4",font=("Calibri", 13))
+    quitbutton.pack()
 
-words = "click to see quote of the day"
-rng = randint(1,10)
+    spacing = Frame(landing,width=25)
+    spacing.grid(row=0,column=1)
 
-leftframe = Frame(landing,width=300,height=300)
-leftframe.grid(row=0,column=0)
-createbutton = Button(leftframe,text="CREATE",width="45",height="4",font=("Calibri", 13),command=createopen)
-createbutton.pack()
-editbutton = Button(leftframe,text="EDIT",width="45",height="4",font=("Calibri", 13))
-editbutton.pack()
-viewbutton = Button(leftframe,text="VIEW",width="45",height="4",font=("Calibri", 13),command=viewopen)
-viewbutton.pack()
-otherbutton = Button(leftframe,text="OTHER",width="45",height="4",font=("Calibri", 13))
-otherbutton.pack()
-quitbutton = Button(leftframe,text="QUIT",width="45", height="4",font=("Calibri", 13))
-quitbutton.pack()
+    visual = Frame(landing,borderwidth = 1.5, relief=RAISED, width=400,height=150)
+    visual.grid(row=0, column=2)
+    can = Canvas(visual,height=150,width=200)
+    can.grid(row=0,column=0)
+    myimage = Image.open("/Users/hewitt.ho/Documents/Everything/School/IMG_7995.JPG")
+    myimage = myimage.resize((200, 150), Image.ANTIALIAS)
+    myimg = ImageTk.PhotoImage(myimage)
+    can.create_image(0, 0, image=myimg, anchor = NW)
+    quote = Button(visual,text=words,command=change)
+    quote.grid(row=0,column=1)
 
-spacing = Frame(landing,width=25)
-spacing.grid(row=0,column=1)
+    landing.mainloop()
 
-visual = Frame(landing,borderwidth = 1.5, relief=RAISED, width=400,height=150)
-visual.grid(row=0, column=2)
-can = Canvas(visual,height=150,width=200)
-can.grid(row=0,column=0)
-myimage = Image.open("/Users/hewitt.ho/Documents/Everything/School/IMG_7995.JPG")
-myimage = myimage.resize((200, 150), Image.ANTIALIAS)
-myimg = ImageTk.PhotoImage(myimage)
-can.create_image(0, 0, image=myimg, anchor = NW)
-quote = Button(visual,text=words,command=change)
-quote.grid(row=0,column=1)
-landing.mainloop()
+landingpage()
