@@ -53,15 +53,15 @@ def viewopen():
         l1 = "please choose a file"
 
 def otheropen():
-    cwidth = 300
-    cheight = 300
-    herosize = 30
-    heromove = 10
-    hero_x = randint(0,cwidth)
-    hero_y = randint(0,cheight)
     
     def badgame():
-    
+        cwidth = 300
+        cheight = 300
+        herosize = 30
+        heromove = 10
+        hero_x = randint(0,cwidth)
+        hero_y = randint(0,cheight)
+
         def redraw():
             c1.delete("all")
             c1.create_oval(hero_x, hero_y, hero_x + herosize, hero_y + herosize)
@@ -123,7 +123,7 @@ def landingpage():
 
     landing = Tk()
     landing.title("Home")
-    landing.geometry("850x330")
+    landing.geometry("850x270")
 
     words = "click to see quote of the day"
     rng = randint(1,10)
@@ -136,24 +136,57 @@ def landingpage():
     viewbutton.pack()
     otherbutton = Button(leftframe,text="OTHER",width="45",height="4",font=("Calibri", 13),command=otheropen)
     otherbutton.pack()
-    quitbutton = Button(leftframe,text="QUIT",width="45", height="4",font=("Calibri", 13),command=closeall)
+    quitbutton = Button(leftframe,text="QUIT",width="45",height="4",font=("Calibri", 13),command=closeall)
     quitbutton.pack()
 
     spacing = Frame(landing,width=25)
     spacing.grid(row=0,column=1)
 
-    visual = Frame(landing,borderwidth = 1.5, relief=RAISED, width=400,height=150)
-    visual.grid(row=0, column=2)
-    can = Canvas(visual,height=150,width=200)
-    can.grid(row=0,column=0)
-    myimage = Image.open("") # Enter an image here
-    myimage = myimage.resize((200, 150), Image.ANTIALIAS)
-    myimg = ImageTk.PhotoImage(myimage)
-    can.create_image(0, 0, image=myimg, anchor = NW)
+    visual = Frame(landing,borderwidth = 1.5,relief=RAISED,width=400,height=150)
+    visual.grid(row=0,column=2)
     quote = Button(visual,text=words,command=change)
-    quote.grid(row=0,column=1)
+    quote.grid(row=0,column=0)
+    can = Canvas(visual,height=150,width=200)
+    can.grid(row=0,column=1)
+    myimage = Image.open("") # Enter an image here
+    myimage = myimage.resize((200, 150),Image.ANTIALIAS)
+    myimg = ImageTk.PhotoImage(myimage)
+    can.create_image(0,0,image=myimg,anchor=NW)
 
 def register():
+
+    def register_user():
+
+        def createFolder(directory):
+            try:
+                os.makedirs(directory)
+            except OSError:
+                print('Error: Creating directory. ' +  directory)
+
+        username_info = username.get()
+        password_info = password.get()
+        
+        work = "/Users/hewitt.ho/Documents/Everything/"  + str(username_info) # Enter Any Directory
+        print(work)
+        
+        if os.path.exists(work):
+            username_entry.delete(0, END)
+            password_entry.delete(0, END)
+            Label(register_screen,text="Registration Failure - This Username Has Been Taken",fg="red",font=("calibri", 11)).pack()
+        else:
+            createFolder(work)
+            # Creates a folder in the directory with the same name as the username
+        
+            file = open(username_info,"w")
+            file.write(username_info + "\n")
+            file.write(password_info)
+            file.close()
+
+            username_entry.delete(0, END)
+            password_entry.delete(0, END)
+
+            Label(register_screen,text="Registration Success",fg="green",font=("calibri", 11)).pack()
+    
     global register_screen
     register_screen = Toplevel(main_screen)
     register_screen.title("Register")
@@ -166,26 +199,44 @@ def register():
     username = StringVar()
     password = StringVar()
 
-    Label(register_screen, text="Please enter details below", bg="blue").pack()
-    Label(register_screen, text="").pack()
-    username_lable = Label(register_screen, text="Username * ")
+    Label(register_screen,text="Please enter details below",bg="blue").pack()
+    Label(register_screen,text="").pack()
+    username_lable = Label(register_screen,text="Username * ")
     username_lable.pack()
-    username_entry = Entry(register_screen, textvariable=username)
+    username_entry = Entry(register_screen,textvariable=username)
     username_entry.pack()
-    password_lable = Label(register_screen, text="Password * ")
+    password_lable = Label(register_screen,text="Password * ")
     password_lable.pack()
-    password_entry = Entry(register_screen, textvariable=password, show='*')
+    password_entry = Entry(register_screen,textvariable=password, show='*')
     password_entry.pack()
-    Label(register_screen, text="").pack()
-    Button(register_screen, text="Register", width=10, height=1, bg="blue", command = register_user).pack()
+    Label(register_screen,text="").pack()
+    Button(register_screen,text="Register",width=10,height=1,bg="blue",command=register_user).pack()
 
 def login():
+    
+    def login_verify():
+        username1 = username_verify.get()
+        password1 = password_verify.get()
+        username_login_entry.delete(0, END)
+        password_login_entry.delete(0, END)
+
+        list_of_files = os.listdir()
+        if username1 in list_of_files:
+            file1 = open(username1,"r")
+            verify = file1.read().splitlines()
+            if password1 in verify:
+               landingpage()
+            else:
+                password_not_recognised()
+        else:
+            user_not_found()
+
     global login_screen
     login_screen = Toplevel(main_screen)
     login_screen.title("Login")
     login_screen.geometry("300x250")
-    Label(login_screen, text="Please enter details below to login").pack()
-    Label(login_screen, text="").pack()
+    Label(login_screen,text="Please enter details below to login").pack()
+    Label(login_screen,text="").pack()
 
     global username_verify
     global password_verify
@@ -196,86 +247,39 @@ def login():
     global username_login_entry
     global password_login_entry
 
-    Label(login_screen, text="Username * ").pack()
-    username_login_entry = Entry(login_screen, textvariable=username_verify)
+    Label(login_screen,text="Username * ").pack()
+    username_login_entry = Entry(login_screen,textvariable=username_verify)
     username_login_entry.pack()
-    Label(login_screen, text="").pack()
-    Label(login_screen, text="Password * ").pack()
-    password_login_entry = Entry(login_screen, textvariable=password_verify, show= '*')
+    Label(login_screen,text="").pack()
+    Label(login_screen,text="Password * ").pack()
+    password_login_entry = Entry(login_screen,textvariable=password_verify,show='*')
     password_login_entry.pack()
-    Label(login_screen, text="").pack()
-    Button(login_screen, text="Login", width=10, height=1, command = login_verify).pack()
-
-def createFolder(directory):
-    try:
-        if not os.path.exists(directory):
-            os.makedirs(directory)
-    except OSError:
-        print ('Error: Creating directory. ' +  directory)
-
-def register_user():
-
-    username_info = username.get()
-    password_info = password.get()
-
-    file = open(username_info, "w")
-    file.write(username_info + "\n")
-    file.write(password_info)
-    file.close()
-
-    username_entry.delete(0, END)
-    password_entry.delete(0, END)
-
-    Label(register_screen, text="Registration Success", fg="green", font=("calibri", 11)).pack()
-    
-    work = "/Users/hewitt.ho/Documents/Everything/"  + str(username_info) # Enter Any Directory
-    print(work)
-    createFolder(work)
-    # Creates a folder in the directory with the same name as the username
-
-def login_verify():
-    username1 = username_verify.get()
-    password1 = password_verify.get()
-    username_login_entry.delete(0, END)
-    password_login_entry.delete(0, END)
-
-    list_of_files = os.listdir()
-    if username1 in list_of_files:
-        file1 = open(username1, "r")
-        verify = file1.read().splitlines()
-        if password1 in verify:
-            landingpage()
-
-        else:
-            password_not_recognised()
-
-    else:
-        user_not_found()
+    Label(login_screen,text="").pack()
+    Button(login_screen,text="Login",width=10,height=1,command = login_verify).pack()
 
 def password_not_recognised():
+
+    def delete_password_not_recognised():
+        password_not_recog_screen.destroy()
+    
     global password_not_recog_screen
     password_not_recog_screen = Toplevel(login_screen)
     password_not_recog_screen.title("Success")
     password_not_recog_screen.geometry("150x100")
-    Label(password_not_recog_screen, text="Invalid Password ").pack()
-    Button(password_not_recog_screen, text="OK", command=delete_password_not_recognised).pack()
+    Label(password_not_recog_screen,text="Invalid Password ").pack()
+    Button(password_not_recog_screen,text="OK",command=delete_password_not_recognised).pack()
  
 def user_not_found():
+
+    def delete_user_not_found_screen():
+        user_not_found_screen.destroy()
+
     global user_not_found_screen
     user_not_found_screen = Toplevel(login_screen)
     user_not_found_screen.title("Success")
     user_not_found_screen.geometry("150x100")
-    Label(user_not_found_screen, text="User Not Found").pack()
-    Button(user_not_found_screen, text="OK", command=delete_user_not_found_screen).pack()
-
-def delete_login_success():
-    login_success_screen.destroy()
-
-def delete_password_not_recognised():
-    password_not_recog_screen.destroy()
-
-def delete_user_not_found_screen():
-    user_not_found_screen.destroy()
+    Label(user_not_found_screen,text="User Not Found").pack()
+    Button(user_not_found_screen,text="OK",command=delete_user_not_found_screen).pack()
 
 def main_account_screen():
     global main_screen
@@ -284,9 +288,9 @@ def main_account_screen():
     main_screen.title("Account Login")
     Label(text="Select Your Choice", bg="blue", width="300", height="2", font=("Calibri", 13)).pack()
     Label(text="").pack()
-    Button(text="Login", height="2", width="30", command = login).pack()
+    Button(text="Login", height="2",width="30",command=login).pack()
     Label(text="").pack()
-    Button(text="Register", height="2", width="30", command=register).pack()
+    Button(text="Register",height="2",width="30",command=register).pack()
 
     main_screen.mainloop()
 
